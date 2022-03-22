@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "user.proto";
+
+option java_multiple_files = true;
+
+option java_package = "com.proto.user";
+
+service user_service {
+  rpc createUser(userRequest) returns (userResponse) {};
+}
+
+message userRequest {
+  int64 userId = 1;
+  string username = 2;
+  string password = 3;
+//  User user =1;
+}
+
+message userResponse {
+  bool created =1;
+}
