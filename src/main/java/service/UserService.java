@@ -9,17 +9,6 @@ public class UserService extends User_serviceGrpc.User_serviceImplBase {
     @Override
     public void userCreation(UserRequest request, StreamObserver<UserResponse> responseObserver) {
         super.userCreation(request, responseObserver);
+        System.out.println("Let's start user registration" + request.toString());
     }
-    //@Component(immediate = true)
-    //public class GreeterService extends GreeterGrpc.AbstractGreeter implements BindableService{
-    //
-    //    private static final Logger LOG = LoggerFactory.getLogger(GreeterService.class);
-    //
-    //    @Override
-    //    public void sayHello(HelloRequest request, StreamObserver<HelloReply> responseObserver) {
-    //        LOG.info("sayHello endpoint received request from " + request.getName());
-    //        HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + request.getName()).build();
-    //        responseObserver.onNext(reply);
-    //        responseObserver.onCompleted();
-    //    }
-}
+ }
