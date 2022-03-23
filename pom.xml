@@ -22,8 +22,19 @@
         <!-- Proto generation -->
         <dependency>
             <groupId>io.grpc</groupId>
-            <artifactId>grpc-all</artifactId>
-            <version>1.42.1</version>
+            <artifactId>grpc-netty-shaded</artifactId>
+            <version>1.45.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-protobuf</artifactId>
+            <version>1.45.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-stub</artifactId>
+            <version>1.45.0</version>
         </dependency>
 
         <dependency>
@@ -33,32 +44,37 @@
             <version>1.3.5</version>
             <optional>true</optional>
         </dependency>
+        <dependency> <!-- necessary for Java 9+ -->
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>annotations-api</artifactId>
+            <version>6.0.53</version>
+            <scope>provided</scope>
+        </dependency>
 
-        <!-- for use in compiling bundles -->
-        <dependency>
+                <dependency> <!-- for use in compiling bundles -->
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
             <version>5.0.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- for Component Annotations -->
-        <dependency>
+
+        <dependency> <!-- for Component Annotations -->
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.annotation</artifactId>
             <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
 
-        <!--Junit tests -->
-        <dependency>
+
+        <dependency> <!--Junit tests -->
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.8.1</version>
             <scope>test</scope>
         </dependency>
 
-        <!-- Cloud DB -->
-        <dependency>
+
+        <dependency> <!-- Cloud DB -->
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-spanner</artifactId>
             <version>6.21.2</version>
@@ -66,9 +82,7 @@
 
     </dependencies>
 
-
-
-    <build>
+     <build>
         <extensions>
             <extension>
                 <groupId>kr.motd.maven</groupId>
