@@ -1,5 +1,3 @@
-package service;
-
 import grpc.UserService;
 import io.grpc.ServerBuilder;
 
