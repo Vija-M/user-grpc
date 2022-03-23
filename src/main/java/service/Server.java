@@ -1,22 +1,20 @@
 package service;
 
 import grpc.UserService;
-import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
 import java.io.IOException;
 
-public class server {
+public class Server {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        Server server = ServerBuilder
-                .forPort(9090)
+        io.grpc.Server server = ServerBuilder
+                .forPort(5000)
                 .addService(new UserService()).build();
 
         server.start();
         System.out.println("Server started");
         server.awaitTermination();
     }
-
 
 }
