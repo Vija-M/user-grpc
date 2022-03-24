@@ -3,6 +3,7 @@ package grpc;
 import com.proto.user.UserRequest;
 import com.proto.user.UserResponse;
 import com.proto.user.UserServiceGrpc;
+import io.grpc.Metadata;
 import io.grpc.stub.StreamObserver;
 
 public class UserService extends UserServiceGrpc.UserServiceImplBase {
@@ -12,5 +13,10 @@ public class UserService extends UserServiceGrpc.UserServiceImplBase {
         UserResponse response = UserResponse.newBuilder().setCreated(true).build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+    }
+
+    private Metadata userExists(UserRequest request) {
+        Metadata metadata = new Metadata();
+        return metadata;
     }
  }
