@@ -7,12 +7,12 @@ import org.junit.jupiter.api.Assertions;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RegistrationServiceTest {
+public class RegistrationServiceTest {
     RegistrationService subject = new RegistrationService();
 
      @Test
     public void test () {
-      //  assertEquals(true, subject.register(User.getDefaultInstance()));
+        assertTrue(subject.register(User.newBuilder().setUserId(1).setUsername("Vija").setPassword("123qwe").build()));
 
     }
 }
