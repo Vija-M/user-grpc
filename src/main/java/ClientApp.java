@@ -32,18 +32,23 @@ public class ClientApp {
         userRequest = createUserRequest();
     }
 
+
     public static void main(String[] args) throws InterruptedException {
         callToServer(userRequest);
         serverSideStream(userRequest);
         userSideStream(userRequestList);
-        bidirectionStream(userRequestList);
+        bidirectStream(userRequestList);
     }
+
+
     public static UserResponse callToServer(UserRequest request) {
         System.out.println("Unidirectional - Created user will be sent over: " + request);
         UserResponse response = blockingStub.register(request);
         System.out.println("Unidirectional - User registered: " + response.getCreated());
         return response;
     }
+
+
     public static void serverSideStream(UserRequest request) {
         Iterator<UserResponse> responses;
         try {
@@ -57,6 +62,7 @@ public class ClientApp {
             System.out.println("Error: "+ exc.getLocalizedMessage());
         }
     }
+
 
     public static boolean userSideStream(List<UserRequest> userRequestList) throws InterruptedException {
         final CountDownLatch finishLatch = new CountDownLatch(1);
@@ -103,21 +109,7 @@ public class ClientApp {
     }
 
 
-    private static List<UserRequest> createUserRequestList() {
-        List<UserRequest> users = new ArrayList<>();
-        users.add(UserRequest.newBuilder().setUser(User.newBuilder().setUserId(1l).setUsername("anna").setPassword("password1").build()).build());
-        users.add(UserRequest.newBuilder().setUser(User.newBuilder().setUserId(2l).setUsername("alla").setPassword("password2").build()).build());
-        users.add(UserRequest.newBuilder().setUser(User.newBuilder().setUserId(3l).setUsername("aija").setPassword("password3").build()).build());
-        return users;
-    }
-
-    private static UserRequest createUserRequest() {
-        User user = User.newBuilder().setUserId(1l).setUsername("olga").setPassword("qwerty").build();
-        UserRequest userRequest = UserRequest.newBuilder().setUser(user).build();
-        return userRequest;
-    }
-
-    public static List<Boolean> bidirectionStream(List<UserRequest> userRequestList) throws InterruptedException{
+    public static List<Boolean> bidirectStream(List<UserRequest> userRequestList) throws InterruptedException{
         System.out.println("Bidirectional streaming");
         final CountDownLatch finishLatch = new CountDownLatch(1);
         List<Boolean> successList = new ArrayList<>();
@@ -163,5 +155,22 @@ public class ClientApp {
         }
         return successList;
     }
+
+
+
+    private static List<UserRequest> createUserRequestList() {
+        List<UserRequest> users = new ArrayList<>();
+        users.add(UserRequest.newBuilder().setUser(User.newBuilder().setUserId(1l).setUsername("anna").setPassword("password1").build()).build());
+        users.add(UserRequest.newBuilder().setUser(User.newBuilder().setUserId(2l).setUsername("alla").setPassword("password2").build()).build());
+        users.add(UserRequest.newBuilder().setUser(User.newBuilder().setUserId(3l).setUsername("aija").setPassword("password3").build()).build());
+        return users;
+    }
+
+    private static UserRequest createUserRequest() {
+        User user = User.newBuilder().setUserId(1l).setUsername("olga").setPassword("qwerty").build();
+        UserRequest userRequest = UserRequest.newBuilder().setUser(user).build();
+        return userRequest;
+    }
+
 
 }

@@ -29,19 +29,15 @@ class IntegrationTest {
 
     @AfterAll
     public static void closingServer() {
-        server.shutdown();  }
+        server.shutdown();
+    }
 
 
     private UserRequest newUserRequest(long userId, String username, String password) {
-        User user = User.newBuilder()
-                .setUsername(username)
-                .setUserId(userId)
-                .setPassword(password)
+        User user = User.newBuilder().setUsername(username).setUserId(userId).setPassword(password)
                 .build();
 
-        UserRequest request = UserRequest.newBuilder()
-                .setUser(user)
-                .build();
+        UserRequest request = UserRequest.newBuilder().setUser(user).build();
         return request;
     }
 
