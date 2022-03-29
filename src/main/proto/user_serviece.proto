@@ -6,7 +6,7 @@ option java_multiple_files = true;
 option java_package = "com.proto.user";
 
 service UserService {
-  rpc userCreation(UserRequest) returns (UserResponse) {};
+  rpc register(UserRequest) returns (UserResponse) {};
   rpc serverStreamGetCreatedUsers(UserRequest) returns (stream UserResponse) {}
   rpc userStreamCreateUsers(stream UserRequest) returns (UserResponse) {}
   rpc biStreamCreateAndGet(stream UserRequest) returns (stream UserResponse) {}
