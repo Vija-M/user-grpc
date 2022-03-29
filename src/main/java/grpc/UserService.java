@@ -10,6 +10,8 @@ import io.grpc.stub.StreamObserver;
 import service.RegistrationService;
 import io.grpc.Status;
 
+import java.sql.SQLException;
+
 public class UserService extends UserServiceGrpc.UserServiceImplBase {
 
     RegistrationService registrationService = new RegistrationService();
@@ -17,25 +19,16 @@ public class UserService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void userCreation(UserRequest request, StreamObserver<UserResponse> responseObserver) {
         System.out.println("Let's start user registration" + request.toString());
-Metadata metadata = userExists(request);
-if (metadata.keys().size()>0) {
-    responseObserver.onError(Status.ALREADY_EXISTS.withDescription("Already exist").asRuntimeException(metadata));
-} else {
+    boolean created = false;
+    try {
+        created = registrationService.register(request.getUser());
     registrationService.register(request.getUser());
-}
-        UserResponse response = UserResponse.newBuilder().setCreated(true).build();
+} catch (SQLException e) {
+        System.out.println("Data base error: " + e.getLocalizedMessage());
+    }
+        UserResponse response = UserResponse.newBuilder().setCreated(created? true : false).build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
 
-    private Metadata userExists(UserRequest request) {
-        Metadata metadata = new Metadata();
-        if (registrationService.userAlreadyExists(request.getUser())) {
-
-            Metadata.Key<ErrorResponse> errorResponseKey = ProtoUtils.keyForProto(ErrorResponse.getDefaultInstance());
-            ErrorResponse errorResponse = ErrorResponse.newBuilder().build();
-            metadata.put(errorResponseKey, errorResponse);
-        }
-        return metadata;
-    }
  }
