@@ -36,10 +36,10 @@ public class ClientApp {
         callToServer(userRequest);
         serverSideStream(userRequest);
         userSideStream(userRequestList);
-      //  bidirectionStream(userRequestList);
+        bidirectionStream(userRequestList);
     }
     public static UserResponse callToServer(UserRequest request) {
-        System.out.println("Unidirectional - User created and will be sent over: " + request);
+        System.out.println("Unidirectional - Created user will be sent over: " + request);
         UserResponse response = blockingStub.register(request);
         System.out.println("Unidirectional - User registered: " + response.getCreated());
         return response;
@@ -47,7 +47,7 @@ public class ClientApp {
     public static void serverSideStream(UserRequest request) {
         Iterator<UserResponse> responses;
         try {
-            System.out.println("User created and will be sent over: " + request);
+            System.out.println("Created user will be sent over: " + request);
             responses = blockingStub.serverStreamGetCreatedUsers(request);
             for (int i = 1; responses.hasNext(); i++) {
                 UserResponse resp = responses.next();
@@ -57,7 +57,6 @@ public class ClientApp {
             System.out.println("Error: "+ exc.getLocalizedMessage());
         }
     }
-
 
     public static boolean userSideStream(List<UserRequest> userRequestList) throws InterruptedException {
         final CountDownLatch finishLatch = new CountDownLatch(1);
@@ -98,7 +97,7 @@ public class ClientApp {
         }
         requestObserver.onCompleted();
         if (!finishLatch.await(1, TimeUnit.MINUTES)) {
-            System.out.println("Process didn't finish within 1 minute");
+            System.out.println("1 minute is not enough to finish process");
         }
         return allDone[0];
     }
@@ -116,6 +115,53 @@ public class ClientApp {
         User user = User.newBuilder().setUserId(1l).setUsername("olga").setPassword("qwerty").build();
         UserRequest userRequest = UserRequest.newBuilder().setUser(user).build();
         return userRequest;
+    }
+
+    public static List<Boolean> bidirectionStream(List<UserRequest> userRequestList) throws InterruptedException{
+        System.out.println("Bidirectional streaming");
+        final CountDownLatch finishLatch = new CountDownLatch(1);
+        List<Boolean> successList = new ArrayList<>();
+
+        StreamObserver<UserResponse> responseObserver = new StreamObserver<>() {
+            @Override
+            public void onNext(UserResponse response) {
+                successList.add(response.getCreated());
+                System.out.println("User getting response: "+ response.getCreated());
+            }
+
+            @Override
+            public void onCompleted() {
+                System.out.println("Bidirectional streaming is done");
+                finishLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                finishLatch.countDown();
+                System.out.println("Error "+ t.getLocalizedMessage());
+            }
+        };
+
+        StreamObserver<UserRequest> requestObserver = nonBlockingStub.biStreamCreateAndGet(responseObserver);
+        try {
+            for (UserRequest req : userRequestList) {
+                System.out.println("Created user will be sent over: "+req.getUser());
+                requestObserver.onNext(req);
+                Thread.sleep(200);
+                if (finishLatch.getCount() == 0) {
+                    return successList;
+                }
+            }
+        } catch (RuntimeException exc) {
+            requestObserver.onError(exc);
+            throw exc;
+        }
+        requestObserver.onCompleted();
+
+        if (!finishLatch.await(1, TimeUnit.MINUTES)) {
+            System.out.println("1 minute is not enough to finish process");
+        }
+        return successList;
     }
 
 }
