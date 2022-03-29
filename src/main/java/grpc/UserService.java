@@ -3,12 +3,9 @@ package grpc;
 import com.proto.user.UserRequest;
 import com.proto.user.UserResponse;
 import com.proto.user.UserServiceGrpc;
-import io.grpc.Metadata;
-import io.grpc.protobuf.ProtoUtils;
-import io.grpc.reflection.v1alpha.ErrorResponse;
 import io.grpc.stub.StreamObserver;
 import service.RegistrationService;
-import io.grpc.Status;
+
 
 import java.sql.SQLException;
 

@@ -1,10 +1,10 @@
-package service;
-
 import com.proto.user.User;
 import com.proto.user.UserRequest;
 import com.proto.user.UserResponse;
 import grpc.UserService;
 import io.grpc.*;
+import io.grpc.Server;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -24,10 +24,13 @@ class IntegrationTest {
 
     @Test
     void register() throws Exception {
-        server.start();
         UserRequest request = newUserRequest(21l, "Anna", "anna");
-        server.shutdown();
     }
+
+    @AfterAll
+    public static void closingServer() {
+        server.shutdown();  }
+
 
     private UserRequest newUserRequest(long userId, String username, String password) {
         User user = User.newBuilder()
