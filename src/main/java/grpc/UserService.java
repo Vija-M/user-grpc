@@ -68,7 +68,38 @@ public class UserService extends UserServiceGrpc.UserServiceImplBase {
             }
         };
     }
+    @Override
+    public StreamObserver<UserRequest> biStreamCreateAndGet(StreamObserver<UserResponse> response) {
+        return new StreamObserver<>() {
+            int total;
+            int counter;
 
+            @Override
+            public void onNext(UserRequest request) {
+                boolean registered = false;
+                try {
+                    registered = registrationService.register(request.getUser());
+                } catch (SQLException ex) {
+                    System.out.println("SQL error " + ex.getLocalizedMessage());
+                }
+                total++;
+                if (registered) counter++;
+                UserResponse registeredUser = UserResponse.newBuilder().setCreated(registered ? true : false).build();
+                response.onNext(registeredUser);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println("Error: " + throwable.getLocalizedMessage());
+            }
+
+            @Override
+            public void onCompleted() {
+                System.out.println("From total incoming requests: " + total + " succeeded: " + counter);
+                response.onCompleted();
+            }
+        };
+    }
 
 }
 
