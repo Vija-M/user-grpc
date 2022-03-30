@@ -3,18 +3,18 @@ import com.proto.user.UserRequest;
 import com.proto.user.UserResponse;
 import grpc.UserService;
 import io.grpc.*;
-import io.grpc.Server;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 
 class IntegrationTest {
 
-    private static final int port = 5000;
-    private static Server server = ServerBuilder
-            .forPort(port)
+    private static final int port = 9090;
+    private static io.grpc.Server server = ServerBuilder.forPort(port)
             .addService(new UserService()).build();
 
     @BeforeAll
@@ -23,12 +23,15 @@ class IntegrationTest {
     }
 
     @Test
-    void register() throws Exception {
-        UserRequest request = newUserRequest(21l, "Anna", "anna");
+    void registerStr() throws Exception {
+        UserRequest request = newUserRequest(21l, "Roberto", "rob");
+        UserResponse response = ClientApp.callToServer(request);
+        assertTrue(response.getCreated());
     }
 
+
     @AfterAll
-    public static void closingServer() {
+    public static void serverShutdown() {
         server.shutdown();
     }
 
